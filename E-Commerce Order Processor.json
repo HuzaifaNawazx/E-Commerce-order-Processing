@@ -1,0 +1,421 @@
+{
+  "name": "E-Commerce Order Processor",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "Order-Processor",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -160,
+        0
+      ],
+      "id": "7e5cdd34-325f-4339-9a2b-4cd3d3e0a318",
+      "name": "Webhook",
+      "webhookId": "179f1f26-7372-4a41-b326-438a7893d3fb"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "2bbc7e05-0206-4f8e-b5ea-f2f5ae43ef4e",
+              "leftValue": "={{ $json.body.customer_email }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "94f17020-9d27-4a0e-8ecd-095503f12702",
+              "leftValue": "={{ $json.body.paid }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "f2ab3702-50d9-4c8b-826a-ffab56bb5cbb",
+              "leftValue": "={{ $json.body.customer_email }}",
+              "rightValue": "@gmail.com",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "4ab46ba3-1c23-4e32-85de-5bfa88b00514",
+              "leftValue": "={{ $json.body.total }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        64,
+        16
+      ],
+      "id": "d8cd3f59-0eda-4bd1-a86d-fc2936e04c56",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "ca948411-fa62-4c39-88fd-49a108062804",
+              "leftValue": "={{ $('Webhook').item.json.body.total }}",
+              "rightValue": 5000,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        272,
+        -32
+      ],
+      "id": "22ac4ced-5ae2-4348-8cda-58fffe5b7749",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "68a5452a-9fcc-4e46-bbfa-eb0776135098",
+              "name": "Lead Type",
+              "value": "High Value",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        448,
+        -208
+      ],
+      "id": "e0d55d3e-571f-4d2e-bb46-5ca9b592bfca",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "620cb8b9-a3a8-4a4d-b4fd-b41da5174899",
+              "name": "Lead Type",
+              "value": "Normal",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        464,
+        48
+      ],
+      "id": "377b1211-ae3a-414c-a55b-0d235b346eaf",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1k9cyxTHggAZ1F5Gg6lA180JVVzfSzCQOqbFARrIAlbM",
+          "mode": "list",
+          "cachedResultName": "Leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1k9cyxTHggAZ1F5Gg6lA180JVVzfSzCQOqbFARrIAlbM/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1k9cyxTHggAZ1F5Gg6lA180JVVzfSzCQOqbFARrIAlbM/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{ $('Webhook').item.json.body.customer_name }}",
+            "Email": "={{ $('Webhook').item.json.body.customer_email }}",
+            "Total": "={{ $('Webhook').item.json.body.total }}",
+            "Lead Type": "={{ $json['Lead Type'] }}",
+            "Order Id": "={{ $('Webhook').item.json.body.order_id }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Order Id",
+              "displayName": "Order Id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Total",
+              "displayName": "Total",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Lead Type",
+              "displayName": "Lead Type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1120,
+        -224
+      ],
+      "id": "ff7364a4-7a70-4cc0-b8ea-ea6af344e61f",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "MkHpHbHDtOJ1BfPH",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "=Please enter valid data \nName:{{ $json.body.customer_name }}\nEmail:{{ $json.body.customer_email }}\nTotal amount={{ $json.body.paid }}{{ $json.body.total }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        272,
+        144
+      ],
+      "id": "afed16dd-0820-4224-adee-07e0de19581b",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "The Data is correctly stored",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1376,
+        -224
+      ],
+      "id": "62d8cefb-2508-4eec-84c7-c351eda3546d",
+      "name": "Respond to Webhook1"
+    },
+    {
+      "parameters": {
+        "sendTo": "huzaifanawaz197@gmail.com",
+        "subject": "=New Lead added ({{ $json['Lead Type'] }})",
+        "message": "Hi new lead has filled the form and successfully added to your sheet",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        848,
+        -224
+      ],
+      "id": "d584fae6-a9e3-47b2-a4f8-4d1fa8e28287",
+      "name": "Send a message",
+      "webhookId": "30ca2e5a-52fe-498d-b417-6310d76cd714",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "93bUD8r3KytCnhWk",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Respond to Webhook1": {
+      "main": [
+        []
+      ]
+    },
+    "Send a message": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "c5fd862c-1d1e-4fe5-813d-63ba4b8f64b5",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "eb77dd66a3d0f3ab6dafcb0d0cfc93a07bbd3d5d1640d3c20bf0b01b61b3769f"
+  },
+  "nodeGroups": [],
+  "id": "voehj3hlM5JqQPwD",
+  "tags": []
+}
